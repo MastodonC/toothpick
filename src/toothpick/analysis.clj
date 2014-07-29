@@ -109,6 +109,11 @@
       (toothpick :> ?practice-id ?nhsfees ?post-code ?num-practitioners ?average-review-score-of-clinic)
       (postcodes :> ?post-code ?borough-code)))
 
+(defn distinct-boroughs [postcodes]
+  (<- [?borough-code]
+      (postcodes :#>  10 {8 ?borough-code})
+      (:distinct ?borough-code)))
+
 (defn go-pc-borough []
   (let [postcodes (hfs-textline "datasets/postcode-to-local-authority.csv")
         output    (hfs-delimited "output/pc-borough" :sinkmode :replace)
@@ -150,8 +155,8 @@
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
     (?- (stdout) (postcode->borough (codepoint-file postcodes trap)))))
 
-(defn go []
-  (let [borough (hfs-delimited "datasets/uk-air/lb-bexley-2.csv")
-        output (hfs-delimited "output/borough" :sinkmode :replace)
-        trap (hfs-delimited "output/trap" :sinkmode :replace)]
-    (?- output (borough-gen borough))))
+(defn go-borough-codes []
+  (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv" :skip-header? true)
+        output    (hfs-delimited "output/borough-codes" :sinkmode :replace)
+        trap      (hfs-delimited "output/trap" :sinkmode :replace)]
+    (?- output (distinct-boroughs (codepoint-file postcodes trap)))))

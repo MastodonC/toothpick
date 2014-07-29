@@ -2,23 +2,32 @@
   (:require [clj-http.client :as http]
             [clojure.string :as str]
             [cheshire.core :as json]
+            [clojure.tools.logging :as log]
             ))
 
-(defn get-statistics* [uri]
-  (http/get uri {:as :json}))
+(defn get-borough-data* [uri]
+  (http/get uri ))
 
-(def get-statistics (memoize get-statistics*))
+(def get-borough-data (memoize get-borough-data*))
 
-(defn ->coordinate-pairs [s]
-  (->> (str/split s #"\s+")
-       (map #(Double. %))
-       (partition 2)
-       (map vec)))
+(defn ->coordinate-pairs [s]1
+  (println "AAA:" (type s))
+  (let [s' (if (seq? s) (first s) s)]
+    (->> (str/split s' #"\s+")
+         (map #(Double. %))
+         (partition 2)
+         (map vec))))
+
+(defn ->statistical-geog-url [e-code]
+  (format "http://statistics.data.gov.uk/doc/statistical-geography/%s.json" e-code))
 
 (defn data-for [e-code]
-  (let [data (-> (format "http://statistics.data.gov.uk/doc/statistical-geography/%s.json" e-code)
-                  get-statistics
-                  (get-in [:body :result :primaryTopic]))]
+  (println "returning data for " e-code)
+  (when-let [data (-> e-code
+                      ->statistical-geog-url
+                      get-borough-data
+                      (get-in [:body :result :primaryTopic]))]
+    (println "returning data for " e-code)
     {:name     (:officialname data)
      :e-code   (:label data)
      :coordinates (->coordinate-pairs (:hasExteriorLatLongPolygon data))}))
