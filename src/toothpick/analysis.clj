@@ -48,9 +48,9 @@
       (split ?line 20 :#> 20 {0 ?practice 9 ?post-code})))
 
 (defn practice->borough [epraccur postcodes]
-  (<- [?practice ?borough]
+  (<- [?practice ?borough-code]
       (epraccur :> ?practice ?post-code)
-      (postcodes :> ?post-code ?borough)))
+      (postcodes :> ?post-code ?borough-code _)))
 
 (defn postcode-file [raw-in trap]
   (<- [?pcd7 ?pcd8 ?pcds
@@ -66,14 +66,15 @@
       (:trap trap)))
 
 (defn postcode->borough [in]
-  (<- [?postcode ?borough]
+  (<- [?postcode ?borough-code ?borough]
       (in :#> 12 {1 ?postcode-dirty
+                  9 ?borough-code
                   10 ?borough-dirty})
       (identity ?postcode-dirty :> ?postcode)
       (identity ?borough-dirty :> ?borough)))
 
 (defn go-pc-borough []
-  (let [postcodes (hfs-textline "/home/neale/workspace/toothpick/datasets/postcode-to-local-authority-small.csv")
+  (let [postcodes (hfs-textline "/home/neale/workspace/toothpick/datasets/postcode-to-local-authority.csv")
         output    (hfs-delimited "output/pc-borough" :sinkmode :replace)
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
     (?- (stdout) (postcode->borough (postcode-file postcodes trap)))))
