@@ -93,11 +93,21 @@
       (split ?line 6 :> ?code ?site-name ?ccg-name ?pct-likely ?pct-unlikely ?post-code-dirty)
       (normalise-postcode ?post-code-dirty :> ?post-code)))
 
+(defn toothpick-file [raw-in trap]
+  (<- [?practice-id ?nhsfees ?post-code ?num-practitioners ?average-review-score-of-clinic]
+      (raw-in ?line)
+      (split ?line 5 :> ?practice-id ?nhsfees ?post-code-dirty ?num-practitioners ?average-review-score-of-clinic)
+      (normalise-postcode ?post-code-dirty :> ?post-code)))
+
 (defn postcode->borough [in]
-  (<- [?postcode ?borough-code]
-      (in :#> 10 {0 ?postcode-dirty
-                  8 ?borough-code})
-      (normalise-postcode ?postcode-dirty :> ?postcode)))
+  (<- [?post-code ?borough-code]
+      (in :#> 10 {0 ?post-code
+                  8 ?borough-code})))
+
+(defn toothpick->borough [toothpick postcodes]
+  (<- [?practice-id ?nhsfees ?post-code ?num-practitioners ?average-review-score-of-clinic ?borough-code]
+      (toothpick :> ?practice-id ?nhsfees ?post-code ?num-practitioners ?average-review-score-of-clinic)
+      (postcodes :> ?post-code ?borough-code)))
 
 (defn go-pc-borough []
   (let [postcodes (hfs-textline "datasets/postcode-to-local-authority.csv")
@@ -119,8 +129,15 @@
         output    (hfs-delimited "output/hospitals" :sinkmode :replace)
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
     (?- output (hospital->borough (hospital-file hospitals trap)
-                                    (postcode->borough (codepoint-file postcodes trap))))))
+                                  (postcode->borough (codepoint-file postcodes trap))))))
 
+(defn go-toothpick []
+  (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv")
+        toothpick (hfs-textline "datasets/toothpick.csv")
+        output    (hfs-delimited "output/toothpick" :sinkmode :replace)
+        trap      (hfs-delimited "output/trap" :sinkmode :replace)]
+    (?- output (toothpick->borough (toothpick-file toothpick trap)
+                                    (postcode->borough (codepoint-file postcodes trap))))))
 (defn go-epraccur []
   (let [epraccur  (hfs-textline "datasets/epraccur-small.csv")
         output    (hfs-delimited "output/practices" :sinkmode :replace)
@@ -129,7 +146,7 @@
 
 (defn go-postcodes []
   (let [postcodes (hfs-textline "datasets/codepoint-postcodes-small.csv")
-        output    (hfs-delimited "output/practices" :sinkmode :replace)
+        output    (hfs-delimited "output/practices" :sinkmode :replace :write-header? true)
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
     (?- (stdout) (postcode->borough (codepoint-file postcodes trap)))))
 
