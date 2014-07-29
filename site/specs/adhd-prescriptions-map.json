@@ -1,0 +1,38 @@
+{
+    "div": "adhd-prescriptions-map",
+    "view": [53.0, -0.5],
+    "zoom": 6,
+    "data":
+        {
+            "csv_url": "data/adhd-ccg-scrips-drift.csv",
+            "json_url": "data/ccg-boundaries.json"
+        },
+    "merge" :
+        {
+            "csv_key": "ccg_code",
+            "json_object": "ccg_boundaries"
+        },
+    "legend":
+        {
+            "title" : "Deviation from the mean",
+            "categories": [],
+            "range": [ 4, 3, 2, 1, 0.5, 0, -0.5, -1, -2, -3, -4],
+            "colors": ["#A50026", "#D73027","#F46D43", "#FDAE61", "#FEE090", "#FFFFBF","#E0F3F8", "#ABD9E9", "#74ADD1", "#4575B4", "#313695"]
+        },
+    "infoBox":
+        {
+            "header": "<h3>Variance of prescriptions</h3>",
+            "labels": ["CCG Code: ", "CCG Name: ", "Registered Patients: ", "Deviance from mean: "],
+            "fields": [
+                "ccg_code",
+                "name",
+                "population",
+                "drift"
+            ],
+            "formats": [null, null, "0,0", "0,0.0"]
+        },
+    "marks":
+        {
+            "scaleField": "drift"
+        }
+}
