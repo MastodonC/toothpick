@@ -6,23 +6,25 @@
             ))
 
 (defn get-borough-data* [uri]
-  (http/get uri ))
+  (http/get uri {:as :json}))
 
-(def get-borough-data (memoize get-borough-data*))
+(def get-borough-data get-borough-data*)
 
-(defn ->coordinate-pairs [s]1
+(defn ->coordinate-pairs [s]
   (println "AAA:" (type s))
-  (let [s' (if (seq? s) (first s) s)]
-    (->> (str/split s' #"\s+")
-         (map #(Double. %))
-         (partition 2)
-         (map vec))))
+  (if s
+    (let [s' (if (vector? s) (first s) s)]
+      (->> (str/split s' #"\s+")
+           (map #(Double. %))
+           (partition 2)
+           (map vec)))
+    []))
 
 (defn ->statistical-geog-url [e-code]
   (format "http://statistics.data.gov.uk/doc/statistical-geography/%s.json" e-code))
 
 (defn data-for [e-code]
-  (println "returning data for " e-code)
+  (println "retrieving data for " e-code)
   (when-let [data (-> e-code
                       ->statistical-geog-url
                       get-borough-data
