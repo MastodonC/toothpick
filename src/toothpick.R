@@ -1,4 +1,7 @@
-setwd("/Users/francinebennett/Dropbox/datasets/") # Location where copy of raw data is stored
+# Location where copy of raw data is stored
+setwd("/Users/francinebennett/Dropbox/datasets/") 
+
+# Libraries used in this analysis
 require("gdata")
 require("ggplot2")
 require("zoo")
@@ -35,8 +38,6 @@ mene.borough<-aggregate(mene.survey$q1,by=list(mene.survey$RESIDENCE_LOCALAUTHOR
 names(mene.borough)<-c("LA.name",y="weekly_greenspace_visits")
 mene.borough$LA.name<-as.character(mene.borough$LA.name)
 mene.borough$LA.name<-gsub("&","AND",mene.borough$LA.name) # Make borough names match exactly
-mene.borough$LA.name<-gsub(", CITY OF","",mene.borough$LA.name)
-mene.borough$LA.name<-gsub(", COUNTY OF","",mene.borough$LA.name)
 mene.borough<-subset(mene.borough,LA.name!="0")
 mene.borough$greenspace.rank<-scale(rank(mene.borough$weekly_greenspace_visits),center=TRUE,scale=FALSE)
 
@@ -51,11 +52,11 @@ patient.experience<-cast(patient.experience,V1~V3)
 #patient.experience$pct_quick<-patient.experience[,3]/patient.experience[,2]
 practice.locations<-read.csv("practice-to-borough.csv",sep="\t",header=FALSE)
 patient.experience<-merge(patient.experience,practice.locations,all.x=TRUE)
-names(patient.experience)<-c("practice_code","question_responses","positive_responses","borough_code")
-borough.gp.experience<-ddply(patient.experience, .(borough_code), summarize, question_responses = sum(question_responses), positive_responses = sum(positive_responses,na.rm=TRUE))
+names(patient.experience)<-c("practice_code","question_responses","positive_responses","LA.code")
+borough.gp.experience<-ddply(patient.experience, .(LA.code), summarize, question_responses = sum(question_responses), positive_responses = sum(positive_responses,na.rm=TRUE))
 borough.gp.experience$pct_canseegp<-borough.gp.experience$positive_responses/borough.gp.experience$question_responses
 borough.gp.experience$gp.rank<-scale(rank(borough.gp.experience$pct_canseegp),center=TRUE,scale=FALSE)
-borough.gp.experience<-borough.gp.experience[,c("borough_code","pct_canseegp","gp.rank")]
+borough.gp.experience<-borough.gp.experience[,c("LA.code","pct_canseegp","gp.rank")]
 
 ## HOSPITAL FRIENDS AND FAMILY DATA
 hospital.ae<-read.csv("Friends and Family/FFT_AE_csv4.csv",skip=2)
@@ -72,15 +73,15 @@ borough.hospital.experience$hospital.rank<-scale(rank(borough.hospital.experienc
 
 ## DENTISTRY DATA
 dentists<-read.csv("toothpick-all-uk-with-borough.csv",sep="\t",header=FALSE)
-names(dentists)<-c("dentist_id","nhs_fees","postcode","dental_practitioners","review_score","borough")
-dentists.borough<-ddply(dentists, .(borough), summarize, dental_practitioners = sum(dental_practitioners))
+names(dentists)<-c("dentist_id","nhs_fees","postcode","dental_practitioners","review_score","LA.code")
+dentists.borough<-ddply(dentists, .(LA.code), summarize, dental_practitioners = sum(dental_practitioners))
 # Normalise count of dentists by population estimate from ONS at http://www.neighbourhood.statistics.gov.uk/dissemination/instanceSelection.do?JSAllowed=true&Function=&%24ph=60_61_60_61&CurrentPageId=61&step=2&datasetFamilyId=1813&instanceSelection=134023&Next.x=9&Next.y=5
 population<-read.csv("K30A0312_2725_2011SOA_LA.CSV",skip=2,stringsAsFactors=FALSE)
 population<-population[,c("X","All.Persons..All.Ages")]
 population$All.Persons..All.Ages<-as.numeric(population$All.Persons..All.Ages)
-dentists.borough<-merge(dentists.borough,population,by.x="borough",by.y="X",all.x=TRUE)
+dentists.borough<-merge(dentists.borough,population,by.x="LA.code",by.y="X",all.x=TRUE)
 dentists.borough$dentists_per_thousand<-dentists.borough$dental_practitioners/(dentists.borough$All.Persons..All.Ages/1000)
-dentists.borough<-dentists.borough[,c("borough","dentists_per_thousand")]
+dentists.borough<-dentists.borough[,c("LA.code","dentists_per_thousand")]
 dentists.borough$dentists.rank<-scale(rank(dentists.borough$dentists_per_thousand),center=TRUE,scale=FALSE)
 
 ## MERGE ALL DATASETS AND RANKINGS TO CREATE A SINGLE SCORE
@@ -94,9 +95,9 @@ borough.healthscore$LA.name<-gsub(", CITY OF","",borough.healthscore$LA.name)
 borough.healthscore$LA.name<-gsub(", COUNTY OF","",borough.healthscore$LA.name)
 
 borough.healthscore<-merge(borough.healthscore,mene.borough,all=TRUE)
-borough.healthscore<-merge(borough.healthscore,borough.hospital.experience,by.x="LA.code",by.y="LA.code",all=TRUE)
-borough.healthscore<-merge(borough.healthscore,borough.gp.experience,by.x="LA.code",by.y="borough_code",all=TRUE)
-borough.healthscore<-merge(borough.healthscore,dentists.borough,by.x="LA.code",by.y="borough",all=TRUE)
+borough.healthscore<-merge(borough.healthscore,borough.hospital.experience,by="LA.code",all=TRUE)
+borough.healthscore<-merge(borough.healthscore,borough.gp.experience,by="LA.code",all=TRUE)
+borough.healthscore<-merge(borough.healthscore,dentists.borough,by="LA.code",all=TRUE)
 
 borough.healthscore$overall.rank<-
   rowMeans(
