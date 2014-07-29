@@ -8,7 +8,9 @@
                  [clj-http "0.9.2"]
                  [org.clojure/data.xml "0.0.7"]
                  [com.github.kyleburton/clj-xpath "1.4.3"]
-                 [clj-time "0.8.0"]]
+                 [clj-time "0.8.0"]
+                 [camel-snake-kebab "0.2.0"]
+                 [clojure-csv "2.0.1"]]
 
   :profiles { :dev {:dependencies [[org.apache.hadoop/hadoop-core "1.1.2"]]}}
 
