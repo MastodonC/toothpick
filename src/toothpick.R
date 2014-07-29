@@ -70,6 +70,19 @@ borough.hospital.experience<-ddply(hospital.ae, .(V3), summarize, hospital_exper
 names(borough.hospital.experience)<-c("LA.code","hospital_experience_score")
 borough.hospital.experience$hospital.rank<-scale(rank(borough.hospital.experience$hospital_experience_score),center=TRUE,scale=FALSE)
 
+## DENTISTRY DATA
+dentists<-read.csv("toothpick-all-uk-with-borough.csv",sep="\t",header=FALSE)
+names(dentists)<-c("dentist_id","nhs_fees","postcode","dental_practitioners","review_score","borough")
+dentists.borough<-ddply(dentists, .(borough), summarize, dental_practitioners = sum(dental_practitioners))
+# Normalise count of dentists by population estimate from ONS at http://www.neighbourhood.statistics.gov.uk/dissemination/instanceSelection.do?JSAllowed=true&Function=&%24ph=60_61_60_61&CurrentPageId=61&step=2&datasetFamilyId=1813&instanceSelection=134023&Next.x=9&Next.y=5
+population<-read.csv("K30A0312_2725_2011SOA_LA.CSV",skip=2,stringsAsFactors=FALSE)
+population<-population[,c("X","All.Persons..All.Ages")]
+population$All.Persons..All.Ages<-as.numeric(population$All.Persons..All.Ages)
+dentists.borough<-merge(dentists.borough,population,by.x="borough",by.y="X",all.x=TRUE)
+dentists.borough$dentists_per_thousand<-dentists.borough$dental_practitioners/(dentists.borough$All.Persons..All.Ages/1000)
+dentists.borough<-dentists.borough[,c("borough","dentists_per_thousand")]
+dentists.borough$dentists.rank<-scale(rank(dentists.borough$dentists_per_thousand),center=TRUE,scale=FALSE)
+
 ## MERGE ALL DATASETS AND RANKINGS TO CREATE A SINGLE SCORE
 borough.healthscore<-cycling.frequency
 borough.healthscore<-merge(borough.healthscore,walking.frequency,all=TRUE)
@@ -83,6 +96,7 @@ borough.healthscore$LA.name<-gsub(", COUNTY OF","",borough.healthscore$LA.name)
 borough.healthscore<-merge(borough.healthscore,mene.borough,all=TRUE)
 borough.healthscore<-merge(borough.healthscore,borough.hospital.experience,by.x="LA.code",by.y="LA.code",all=TRUE)
 borough.healthscore<-merge(borough.healthscore,borough.gp.experience,by.x="LA.code",by.y="borough_code",all=TRUE)
+borough.healthscore<-merge(borough.healthscore,dentists.borough,by.x="LA.code",by.y="borough",all=TRUE)
 
 borough.healthscore$overall.rank<-
   rowMeans(
@@ -90,7 +104,8 @@ borough.healthscore$overall.rank<-
                            "walking.rank",
                            "greenspace.rank",
                            "hospital.rank",
-                           "gp.rank")], na.rm = TRUE, dims = 1)
+                           "gp.rank",
+                           "dentists.rank")], na.rm = TRUE, dims = 1)
 
 borough.healthscore<-subset(borough.healthscore,!is.na(LA.name) & !is.na(LA.code))
 borough.healthscore<-borough.healthscore[order(borough.healthscore$overall.rank,decreasing=TRUE),]
