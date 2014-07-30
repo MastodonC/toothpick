@@ -112,4 +112,5 @@ borough.healthscore$overall.rank<-
 
 borough.healthscore<-subset(borough.healthscore,!is.na(LA.name) & !is.na(LA.code))
 borough.healthscore<-borough.healthscore[order(borough.healthscore$overall.rank,decreasing=TRUE),]
+names(borough.healthscore)<-gsub(".","_",names(borough.healthscore))
 write.csv(borough.healthscore,"borough_scores.csv",quote=FALSE,row.names=FALSE)
