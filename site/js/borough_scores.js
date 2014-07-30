@@ -32,7 +32,7 @@ var borough_scores_map = function borough_scores_map(div) {
     var pointToLayer = function pointToLayer(feature, latlng) {
         return L.circleMarker(latlng, {
             radius: 8,
-            fillColor: "#f00",
+            fillColor: "#ff0000",
             color: "#000",
             weight: 1,
             opacity: 1,
