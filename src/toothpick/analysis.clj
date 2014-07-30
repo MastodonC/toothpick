@@ -8,6 +8,12 @@
 
 (def date-time-formatter (tf/formatter "dd-MM-yyyy hh:mm"))
 
+;; Started with http://stackoverflow.com/questions/164979/uk-postcode-regex-comprehensive
+;;  + I added a group round the last pattern.
+;;  + I made most groups non-capturing.
+;;  + I dropped the GIR match
+(def uk-postcode-regex #"(?:((?:[A-Z-[QVX]][0-9][0-9]?)|(?:(?:[A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(?:(?:[A-Z-[QVX]][0-9][A-HJKSTUW])|(?:[A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY]))))\s+([0-9][A-Z-[CIKMOV]]{2}))")
+
 (defmapfn split [line n]
   "reads in a line of string and splits it. truncates/pads to n cells."
   (let [cells (take n (first (csv/parse-csv line )))
@@ -15,7 +21,7 @@
     (concat cells (take (- n cn) (repeat nil)))))
 
 (defmapfn normalise-postcode [s]
-  (when-let [[prefix suffix] (next (re-matches #"(?i)([A-Z]{1,2}\d{1,2})\s*(\d[A-Z]{2})" s))]
+  (when-let [[prefix suffix] (next (re-matches uk-postcode-regex s))]
     (.toUpperCase (format "%-4s%s" prefix suffix))))
 
 ;; 01-01-2014,00:15
