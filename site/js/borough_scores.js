@@ -53,9 +53,9 @@ var borough_scores_map = function borough_scores_map(div) {
             attribution: 'Map data &copy; 2011 OpenStreetMap contributors, Imagery.'
         }).addTo(map);
 
-    featureLayer(map, "data/borough_geojson.json", defaultStyle, "boundaries.geo");
+    featureLayer(map, "data/borough_topo.json", defaultStyle, "boundaries.geo");
 
-    mergedFeatureLayer(map, "data/borough_scores.csv", "data/borough_geojson.json", "LA_code", style, onEachFeature, pointToLayer, "boundaries.geo")
+    mergedFeatureLayer(map, "data/borough_scores.csv", "data/borough_topo.json", "LA_code", style, onEachFeature, pointToLayer, "boundaries.geo")
     ;
 
     addLegend([-134, -84, -34, 16, 66, 116, 166], map, color);
