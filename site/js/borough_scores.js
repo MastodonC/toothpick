@@ -18,7 +18,7 @@ var borough_scores_map = function borough_scores_map(div) {
             color: 'white',
             dashArray: '3',
             fillOpacity: 0.8
-        }
+        };
     };
     var defaultStyle = function defaultstyle(feature) {
         return {
@@ -103,4 +103,4 @@ var borough_scores_map = function borough_scores_map(div) {
     function zoomToFeature(e) {
         e.target._map.fitBounds(e.target.getBounds());
     }
-}
+};
