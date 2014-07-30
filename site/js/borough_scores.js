@@ -55,14 +55,14 @@ var borough_scores_map = function borough_scores_map(div) {
 
     featureLayer(map, "data/borough_geojson.json", defaultStyle, "boundaries.geo");
 
-    mergedFeatureLayer(map, "data/borough_scores.csv", "data/borough_geojson.json", "e_code", style, onEachFeature, pointToLayer, "boundaries.geo")
+    mergedFeatureLayer(map, "data/borough_scores.csv", "data/borough_geojson.json", "LA_code", style, onEachFeature, pointToLayer, "boundaries.geo")
     ;
 
     addLegend([-135, -85, -35, 15, 65, 115, 165], map, color);
 
     addInfo(map, function (props) {
         var infoBox = '<h3>' + props.LA_name + ' Statistics</h3><br/>' +
-            'Borough Code: ' + props.e_code + '<br />' +
+            'Borough Code: ' + props.LA_code + '<br />' +
             'Cycling Weekly: ' + props.cycling_weekly + '<br />' +
             'Cycling Rank: ' + props.cycling_rank + '<br />' +
             'Walking Thriceweekly: ' + props.walking_thriceweekly + '<br />' +

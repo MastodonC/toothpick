@@ -34,7 +34,7 @@
       {:properties (-> m
                        (dissoc :e-code)
                        (assoc :name     (:officialname data)
-                              :e-code   (:label data)))
+                              :LA_code   (:label data)))
        :coordinates (->coordinate-pairs (:hasExteriorLatLongPolygon data))})
     (println "ERR: " m)
     ))
