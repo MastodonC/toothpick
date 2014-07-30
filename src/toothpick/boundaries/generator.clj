@@ -9,7 +9,7 @@
   (with-open [codes (io/reader borough-codes)]
     (spit output (->> codes
                       line-seq
-                      (map (partial get scores))
+                      (map #(get scores % {:e_code %}))
                       tpb/geojson-for))))
 
 (defn load-scores [s]

@@ -16,6 +16,7 @@
       (->> (str/split s' #"\s+")
            (map #(Double. %))
            (partition 2)
+           (map reverse)
            (map vec)))
     []))
 

@@ -53,7 +53,7 @@ var borough_scores_map = function borough_scores_map(div) {
             attribution: 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2012 CloudMade'
         }).addTo(map);
 
-    featureLayer(map, "data/borough_geojson.json", defaultStyle, "pctboundaries");
+    featureLayer(map, "data/borough_geojson.json", defaultStyle, "boundaries.geo");
 
     // mergedFeatureLayer(map, "data/gp_ccg_prevalence.csv", "data/gp_topo.json", "practice_code", style, onEachFeature, pointToLayer, "gp_geojson");
 

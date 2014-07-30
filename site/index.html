@@ -16,30 +16,11 @@
 
   <script src="http://d3js.org/d3.v3.js"></script>
   <style>
-    #spendmap {
+    #borough_scores_map {
             width: 600px;
             height: 600px;
             margin: 0px 20px;
       }
-    #prevalencemap {
-            width: 600px;
-            height: 600px;
-            margin: 0px 20px;
-      }
-    #spendchart {
-        width: 600px;
-        height: 320px;
-        margin: 0px 20px;
-    }
-    #spendcomparison {
-        width: 600px;
-        height: 320px;
-        margin: 0px 20px;
-    }
-    #totalspend {
-        width: 600px;
-        height: 300px;
-        margin: 0px 20px;
     }
   </style>
 </head>
@@ -109,23 +90,10 @@
           <div class="span4">
             <p>This chart shows ...</p>
           </div>
-          <div class="span7">
-            <div id="spendmap"></div>
-          </div>
         </div>
         <div class="span12">
           <h2>Richard of York... </h2>
           <p></p>
-        </div>
-        <div class="span6">
-          <div id="spendchart"></div>
-        </div>
-        <div class="span6">
-          <div id="spendcomparison"></div>
-        </div>
-        <div class="span12"><h2>chart title</h2></div>
-        <div class="span12">
-          <div id="totalspend"></div>
         </div>
         <div class="span12">
           <div class="span7 offset4">
@@ -142,8 +110,8 @@
             pariatur. Excepteur sint occaecat cupidatat non proident,
             sunt in culpa qui officia deserunt mollit anim id est
             laborum.</p>
-            <div id="gp_prevalence"></div></div>
-          <div class="span7"><div id="prevalencemap"></div></div>
+            <div id="borough_scores"></div></div>
+          <div class="span7"><div id="borough_scores_map"></div></div>
         </div>
       </div>
     </div>
@@ -197,29 +165,12 @@
 
   <!-- sugar -->
   <script src="js/mapProcessing.js"></script>
-  <script src="js/chart_sugar.js"></script>
   <link href="css/charts.css" rel="stylesheet" type="text/css">
   <link href="css/legend.css" rel="stylesheet" type="text/css">
   <!-- spend per ccg map -->
-  <script src="js/diabetes-per-head-per-ccg-per-month.js"></script>
-  <!-- CCG Spend per capita per month -->
-  <script src="js/diabetes_spend_month_by_month.js"></script>
-  <!-- CCG Spend comparison with previous year -->
-  <script src="js/diabetes_spend_comparison.js"></script>
-  <!-- top and bottom 10 -->
-  <script src="js/diabetes_ccg_ranking.js"></script>
-  <!-- Total spend across England -->
-  <script src="js/diabetes_total_spend.js"></script>
-  <!-- CCG Prevalence Map -->
-  <script src="js/diabetes_ccg_prevalence.js"></script>
-  <!-- put it all on a page -->
+  <script src="js/borough_scores.js"></script>
   <script type="text/javascript">
-    diabetes_per_head_per_ccg_per_month('spendmap', '#spendchart', '#spendcomparison');
-    ccg_diabetes_prevalence_map('prevalencemap', '#gp_prevalence');
-    total_spend("#totalspend");
-
-    //diabetes_ccg_ranking_top_10('#lowest');
-    //diabetes_ccg_ranking_bottom_10('#highest');
+    borough_scores_map('borough_scores_map', '#borough_scores');
   </script>
 </body>
 </html>
