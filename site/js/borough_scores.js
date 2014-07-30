@@ -50,12 +50,12 @@ var borough_scores_map = function borough_scores_map(div) {
 
     L.tileLayer('http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
         {
-            attribution: 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2012 CloudMade'
+            attribution: 'Map data &copy; 2011 OpenStreetMap contributors, Imagery.'
         }).addTo(map);
 
     featureLayer(map, "data/borough_geojson.json", defaultStyle, "boundaries.geo");
 
-    // mergedFeatureLayer(map, "data/gp_ccg_prevalence.csv", "data/gp_topo.json", "practice_code", style, onEachFeature, pointToLayer, "gp_geojson");
+    mergedFeatureLayer(map, "data/borough_scores.csv", "data/borough_geojson.json", "e_code", style, onEachFeature, pointToLayer, "boundaries.geo");
 
     addLegend([0, 5, 10, 15, 20, 25], map, color);
 
