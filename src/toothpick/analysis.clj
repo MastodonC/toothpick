@@ -26,6 +26,9 @@
         cn    (count cells)]
     (concat cells (take (- n cn) (repeat nil)))))
 
+(deffilterfn english? [s]
+  (.startsWith s "E"))
+
 (defmapfn normalise-postcode [s]
   (when-let [[prefix suffix] (next (re-matches uk-postcode-regex s))]
     (.toUpperCase (format "%-4s%s" prefix suffix))))
@@ -122,9 +125,10 @@
                         2 ?post-code})
       (postcodes :> ?post-code ?borough-code)))
 
-(defn distinct-boroughs [postcodes]
+(defn distinct-english-boroughs [postcodes]
   (<- [?borough-code]
       (postcodes :#>  10 {8 ?borough-code})
+      (english? ?borough-code)
       (:distinct ?borough-code)))
 
 (defn go-pc-borough []
@@ -172,4 +176,4 @@
   (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv" :skip-header? true)
         output    (hfs-delimited "output/borough-codes" :sinkmode :replace)
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
-    (?- output (distinct-boroughs (codepoint-file postcodes trap)))))
+    (?- output (distinct-english-boroughs (codepoint-file postcodes trap)))))
