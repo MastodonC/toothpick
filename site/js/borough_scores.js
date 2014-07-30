@@ -2,13 +2,13 @@ var borough_scores_map = function borough_scores_map(div) {
 
     var map = L.map(div).setView([53.0, -1.5], 6);
     var color = function getColor(d) {
-        return  d > 165 ? '#D73027' :
-                    d > 115 ? '#FC8D59' :
-                        d > 65 ? '#FEE08B' :
-                            d > 15 ? '#D9EF8B' :
-                                d > -35 ? '#91CF60' :
-                                    d > -85 ? '#1A9850' :
-                                        '#BABABA';
+        return d > 115  ? '#1A9850':
+            d > 65   ? '#91CF60' :
+            d > 15   ? '#D9EF8B' :
+            d > -35  ? '#FEE08B' :
+            d > -85  ? '#D73027' :
+            d > -135 ? '#C62016' :
+            '#BABABA';
     };
     var style = function style(feature) {
         return {
@@ -58,7 +58,7 @@ var borough_scores_map = function borough_scores_map(div) {
     mergedFeatureLayer(map, "data/borough_scores.csv", "data/borough_geojson.json", "LA_code", style, onEachFeature, pointToLayer, "boundaries.geo")
     ;
 
-    addLegend([-135, -85, -35, 15, 65, 115, 165], map, color);
+    addLegend([-134, -84, -34, 16, 66, 116, 166], map, color);
 
     addInfo(map, function (props) {
         var infoBox = '<h3>' + props.LA_name + ' Statistics</h3><br/>' +
