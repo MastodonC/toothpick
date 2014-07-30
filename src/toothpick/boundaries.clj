@@ -23,21 +23,17 @@
 (defn ->statistical-geog-url [e-code]
   (format "http://statistics.data.gov.uk/doc/statistical-geography/%s.json" e-code))
 
-(defn merge-geojson [{:keys [e_code] :as m}]
+(defn merge-geojson [e_code]
   (println "retrieving data for " e_code)
-  (if e_code
+  (when e_code
     (when-let [data (-> e_code
                         ->statistical-geog-url
                         get-borough-data
                         (get-in [:body :result :primaryTopic]))]
       (println "returning data for " e_code)
-      {:properties (-> m
-                       (dissoc :e-code)
-                       (assoc :name     (:officialname data)
-                              :LA_code   (:label data)))
-       :coordinates (->coordinate-pairs (:hasExteriorLatLongPolygon data))})
-    (println "ERR: " m)
-    ))
+      {:properties {:name     (:officialname data)
+                    :LA_code   (:label data)}
+       :coordinates (->coordinate-pairs (:hasExteriorLatLongPolygon data))})))
 
 (defn ->geojson-feature [{:keys [properties coordinates]}]
   {:type "Feature"
