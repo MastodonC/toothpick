@@ -62,16 +62,16 @@ var borough_scores_map = function borough_scores_map(div) {
     addInfo(map, function (props) {
         var infoBox = '<h3>' + props.LA_name + ' Statistics</h3><br/>' +
             'Borough Code: ' + props.LA_code + '<br />' +
-            'Cycling Weekly: ' + props.cycling_weekly + '<br />' +
+            'Cycling Weekly: ' + numeral(props.cycling_weekly).format('0,0.00') + '<br />' +
             'Cycling Rank: ' + props.cycling_rank + '<br />' +
             'Walking Thriceweekly: ' + props.walking_thriceweekly + '<br />' +
             'Walking Rank: ' + props.walking_rank + '<br />' +
-            'Weekly Greenspace Vists: ' + props.weekly_greenspace_visits + '<br />' +
+            'Weekly Greenspace Vists: ' + numeral(props.weekly_greenspace_visits).format('0,0.00') + '<br />' +
             'Greenspace Rank: ' + props.greenspace_rank + '<br />' +
             'Hospital Experience Score: ' + props.hospital_experience_score + '<br />' +
             'Hospital Rank: ' + props.hospital_rank + '<br />' +
-            'Percentage Can See GP: ' + props.pct_canseegp + '<br />' +
-            'Dentists per 1000: ' + props.dentists_per_thousand + '<br />' +
+            'Can See GP: ' + numeral(100*props.pct_canseegp).format('0,') + '%<br />' +
+            'Dentists per 1000: ' + numeral(props.dentists_per_thousand).format('0,0.00') + '<br />' +
             'Dentists Rank: ' + props.dentists_rank + '<br />' +
             'Overall Rank: ' + props.overall_rank + '<br />';
         return infoBox;
