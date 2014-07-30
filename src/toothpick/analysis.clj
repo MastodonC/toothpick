@@ -12,10 +12,14 @@
 ;;  + I added a group round the last pattern.
 ;;  + I made most groups non-capturing.
 ;;  + I dropped the GIR match
+;;  + changed the single space between the two parts to a \s+
 (def uk-postcode-regex #"(?:((?:[A-Z-[QVX]][0-9][0-9]?)|(?:(?:[A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(?:(?:[A-Z-[QVX]][0-9][A-HJKSTUW])|(?:[A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY]))))\s+([0-9][A-Z-[CIKMOV]]{2}))")
 
 (defmapfn split [line n]
-  "reads in a line of string and splits it. truncates/pads to n cells. Replaces \\N in a cell with empty string."
+  "reads in a line and splits it.
+   Also:
+       + truncates/pads to n cells.
+       + Replaces \\N in a cell with empty string."
   (let [cells (->> (first (csv/parse-csv line))
                    (take n)
                    (map #(s/replace % #"\\N" "")))
@@ -137,13 +141,13 @@
     (?- output (practice->borough (epraccur-file epraccur trap)
                                   (postcode->borough (codepoint-file postcodes trap))))))
 
-(defn go-hospitals []
-  (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv")
-        hospitals (hfs-textline "datasets/hospital-locations.csv")
-        output    (hfs-delimited "output/hospitals" :sinkmode :replace)
-        trap      (hfs-delimited "output/trap" :sinkmode :replace)]
-    (?- output (hospital->borough (hospital-file hospitals trap)
-                                  (postcode->borough (codepoint-file postcodes trap))))))
+ (defn go-hospitals []
+     (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv")
+           hospitals (hfs-textline "datasets/hospital-locations.csv")
+           output    (hfs-delimited "output/hospitals" :sinkmode :replace)
+           trap      (hfs-delimited "output/trap" :sinkmode :replace)]
+       (?- output (hospital->borough (hospital-file hospitals trap)
+                                     (postcode->borough (codepoint-file postcodes trap))))))
 
 (defn go-toothpick []
   (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv")
