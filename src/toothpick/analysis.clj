@@ -15,9 +15,11 @@
 (def uk-postcode-regex #"(?:((?:[A-Z-[QVX]][0-9][0-9]?)|(?:(?:[A-Z-[QVX]][A-Z-[IJZ]][0-9][0-9]?)|(?:(?:[A-Z-[QVX]][0-9][A-HJKSTUW])|(?:[A-Z-[QVX]][A-Z-[IJZ]][0-9][ABEHMNPRVWXY]))))\s+([0-9][A-Z-[CIKMOV]]{2}))")
 
 (defmapfn split [line n]
-  "reads in a line of string and splits it. truncates/pads to n cells."
-  (let [cells (take n (first (csv/parse-csv line )))
-        cn     (count cells)]
+  "reads in a line of string and splits it. truncates/pads to n cells. Replaces \\N in a cell with empty string."
+  (let [cells (->> (first (csv/parse-csv line))
+                   (take n)
+                   (map #(s/replace % #"\\N" "")))
+        cn    (count cells)]
     (concat cells (take (- n cn) (repeat nil)))))
 
 (defmapfn normalise-postcode [s]
@@ -71,16 +73,16 @@
 
 (defn postcode-file [raw-in trap]
   (<- [?pcd7 ?pcd8 ?pcds
-       ?par11cd ?par11nm ?par11nmw
-       ?wd11cd ?wd11nm ?wd11nmw
-       ?lad11cd ?lad11nm ?lad11nmw]
-      (raw-in ?line)
-      (split ?line 12 :>
-              ?pcd7 ?pcd8 ?pcds
-              ?par11cd ?par11nm ?par11nmw
-              ?wd11cd ?wd11nm ?wd11nmw
-              ?lad11cd ?lad11nm ?lad11nmw)
-      (:trap trap)))
+         ?par11cd ?par11nm ?par11nmw
+         ?wd11cd ?wd11nm ?wd11nmw
+         ?lad11cd ?lad11nm ?lad11nmw]
+        (raw-in ?line)
+        (split ?line 12 :>
+               ?pcd7 ?pcd8 ?pcds
+               ?par11cd ?par11nm ?par11nmw
+               ?wd11cd ?wd11nm ?wd11nmw
+               ?lad11cd ?lad11nm ?lad11nmw)
+        (:trap trap)))
 
 (defn codepoint-file [raw-in trap]
   (<- [?Postcode ?Positional_quality_indicator ?Eastings ?Northings
@@ -111,8 +113,9 @@
                   8 ?borough-code})))
 
 (defn toothpick->borough [toothpick postcodes]
-  (<- [?practice-id ?nhsfees ?post-code ?num-practitioners ?average-review-score-of-clinic ?borough-code]
-      (toothpick :> ?practice-id ?nhsfees ?post-code ?num-practitioners ?average-review-score-of-clinic)
+  (<- [?practice-id  ?borough-code]
+      (toothpick :#> 5 {0 ?practice-id
+                        2 ?post-code})
       (postcodes :> ?post-code ?borough-code)))
 
 (defn distinct-boroughs [postcodes]
