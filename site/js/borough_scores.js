@@ -73,7 +73,7 @@ var borough_scores_map = function borough_scores_map(div) {
             'Can See GP: ' + numeral(100*props.pct_canseegp).format('0,') + '%<br />' +
             'Dentists per 1000: ' + numeral(props.dentists_per_thousand).format('0,0.00') + '<br />' +
             'Dentists Rank: ' + props.dentists_rank + '<br />' +
-            'Overall Rank: ' + props.overall_rank + '<br />';
+            'Overall Rank: ' + numeral(props.overall_rank).format('0,0.00') + '<br />';
         return infoBox;
     });
 
