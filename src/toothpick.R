@@ -72,7 +72,9 @@ names(borough.hospital.experience)<-c("LA.code","hospital_experience_score")
 borough.hospital.experience$hospital.rank<-scale(rank(borough.hospital.experience$hospital_experience_score),center=TRUE,scale=FALSE)
 
 ## DENTISTRY DATA
-dentists<-read.csv("toothpick-all-uk-with-borough.csv",sep="\t",header=FALSE)
+dentists<-read.csv("mastodonc 2.csv",header=TRUE)
+dentist.locations<-read.csv("dentists-to-borough.csv",sep="\t",header=FALSE)
+dentists<-merge(dentists,dentist.locations,by.x="id",by.y="V1",all.x=TRUE)
 names(dentists)<-c("dentist_id","nhs_fees","postcode","dental_practitioners","review_score","LA.code")
 dentists.borough<-ddply(dentists, .(LA.code), summarize, dental_practitioners = sum(dental_practitioners))
 # Normalise count of dentists by population estimate from ONS at http://www.neighbourhood.statistics.gov.uk/dissemination/instanceSelection.do?JSAllowed=true&Function=&%24ph=60_61_60_61&CurrentPageId=61&step=2&datasetFamilyId=1813&instanceSelection=134023&Next.x=9&Next.y=5
