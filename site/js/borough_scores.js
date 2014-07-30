@@ -61,7 +61,8 @@ var borough_scores_map = function borough_scores_map(div) {
 
     addInfo(map, function (props) {
         var infoBox = '<h3>' + props.LA_name + ' Statistics</h3><br/>' +
-            'Borough Code: ' + props.LA_code + '<br />' +
+            'Borough Code:</th>' + props.LA_code + '<br />' +
+            'Overall Rank: ' + numeral(props.overall_rank).format('0,0.00') + '<br />' +
             'Cycling Weekly: ' + numeral(props.cycling_weekly).format('0,0.00') + '<br />' +
             'Cycling Rank: ' + props.cycling_rank + '<br />' +
             'Walking Thriceweekly: ' + props.walking_thriceweekly + '<br />' +
@@ -72,8 +73,7 @@ var borough_scores_map = function borough_scores_map(div) {
             'Hospital Rank: ' + props.hospital_rank + '<br />' +
             'Can See GP: ' + numeral(100*props.pct_canseegp).format('0,') + '%<br />' +
             'Dentists per 1000: ' + numeral(props.dentists_per_thousand).format('0,0.00') + '<br />' +
-            'Dentists Rank: ' + props.dentists_rank + '<br />' +
-            'Overall Rank: ' + numeral(props.overall_rank).format('0,0.00') + '<br />';
+            'Dentists Rank: ' + props.dentists_rank + '<br />';
         return infoBox;
     });
 
@@ -82,7 +82,7 @@ var borough_scores_map = function borough_scores_map(div) {
 
         layer.setStyle({
             weight: 5,
-            color: '#666',
+            color: '#666666',
             dashArray: '',
             fillOpacity: 0.6
         });
