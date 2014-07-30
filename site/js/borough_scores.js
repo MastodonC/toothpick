@@ -60,7 +60,7 @@ var borough_scores_map = function borough_scores_map(div) {
     addLegend([-134, -84, -34, 16, 66, 116, 166], map, color);
 
     addInfo(map, function (props) {
-        var infoBox = '<h3>' + props.LA_name + ' Statistics</h3><br/>' +
+        var infoBox = '<h4>' + props.LA_name + '</h4>' +
             'Borough Code:</th>' + props.LA_code + '<br />' +
             'Overall Rank: ' + numeral(props.overall_rank).format('0,0.00') + '<br />' +
             'Cycling Weekly: ' + numeral(props.cycling_weekly).format('0,0.00') + '<br />' +

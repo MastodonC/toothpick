@@ -31,8 +31,8 @@
                         get-borough-data
                         (get-in [:body :result :primaryTopic]))]
       (println "returning data for " e_code)
-      {:properties {:name     (:officialname data)
-                    :LA_code   (:label data)}
+      {:properties {:name    (:officialname data)
+                    :LA_code (:label data)}
        :coordinates (->coordinate-pairs (:hasExteriorLatLongPolygon data))})))
 
 (defn ->geojson-feature [{:keys [properties coordinates]}]

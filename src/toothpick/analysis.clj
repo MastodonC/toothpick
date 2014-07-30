@@ -1,9 +1,10 @@
 (ns toothpick.analysis
   (:require [cascalog.api :refer :all]
             [cascalog.more-taps :refer (hfs-delimited)]
-            [clojure.string :as s]
             [clj-time.format :as tf]
             [clojure-csv.core :as csv]
+            [clojure.string :as s]
+            [clojure.string :as str]
             [clojure.tools.logging :as log]))
 
 (def date-time-formatter (tf/formatter "dd-MM-yyyy hh:mm"))
@@ -25,6 +26,15 @@
                    (map #(s/replace % #"\\N" "")))
         cn    (count cells)]
     (concat cells (take (- n cn) (repeat nil)))))
+
+(defmapfn borough-code-corrections [s]
+  (-> s
+      (s/replace #"E06000057" "E06000048") ; Northumberland
+      (s/replace #"E08000037" "E08000020") ; Gateshead
+      (s/replace #"E07000242" "E07000097") ; E. Herts.
+      (s/replace #"E07000243" "E07000101") ; E. Herts.
+      (s/replace #"E11000007" "E11000104") ; Tyne & Wear
+      ))
 
 (deffilterfn english? [s]
   (.startsWith s "E"))
@@ -127,15 +137,16 @@
 
 (defn distinct-english-boroughs [postcodes]
   (<- [?borough-code]
-      (postcodes :#>  10 {8 ?borough-code})
+      (postcodes :#>  10 {8 ?borough-code-dirty})
+      (borough-code-corrections ?borough-code-dirty :> ?borough-code)
       (english? ?borough-code)
       (:distinct ?borough-code)))
 
 (defn go-pc-borough []
-  (let [postcodes (hfs-textline "datasets/postcode-to-local-authority.csv")
+  (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv" :skip-header? true)
         output    (hfs-delimited "output/pc-borough" :sinkmode :replace)
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
-    (?- (stdout) (postcode->borough (postcode-file postcodes trap)))))
+    (?- (stdout) (postcode->borough (codepoint-file postcodes trap)))))
 
 (defn go-practices []
   (let [epraccur  (hfs-textline "datasets/epraccur.csv")
