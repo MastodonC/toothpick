@@ -11,7 +11,6 @@
 (def get-borough-data get-borough-data*)
 
 (defn ->coordinate-pairs [s]
-  (println "AAA:" (type s))
   (if s
     (let [s' (if (vector? s) (first s) s)]
       (->> (str/split s' #"\s+")
