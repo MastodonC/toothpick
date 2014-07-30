@@ -2,12 +2,12 @@ var borough_scores_map = function borough_scores_map(div) {
 
     var map = L.map(div).setView([53.0, -1.5], 6);
     var color = function getColor(d) {
-        return  d > 25 ? '#D73027' :
-                    d > 20 ? '#FC8D59' :
-                        d > 15 ? '#FEE08B' :
-                            d > 10 ? '#D9EF8B' :
-                                d > 5 ? '#91CF60' :
-                                    d > 0 ? '#1A9850' :
+        return  d > 165 ? '#D73027' :
+                    d > 115 ? '#FC8D59' :
+                        d > 65 ? '#FEE08B' :
+                            d > 15 ? '#D9EF8B' :
+                                d > -35 ? '#91CF60' :
+                                    d > -85 ? '#1A9850' :
                                         '#BABABA';
     };
     var style = function style(feature) {
@@ -55,14 +55,14 @@ var borough_scores_map = function borough_scores_map(div) {
 
     featureLayer(map, "data/borough_geojson.json", defaultStyle, "boundaries.geo");
 
-    mergedFeatureLayer(map, "data/borough_scores.csv", "data/borough_geojson.json", "e_code", style, onEachFeature, pointToLayer, "boundaries.geo");
+    mergedFeatureLayer(map, "data/borough_scores.csv", "data/borough_geojson.json", "e_code", style, onEachFeature, pointToLayer, "boundaries.geo")
+    ;
 
-    addLegend([0, 5, 10, 15, 20, 25], map, color);
+    addLegend([-135, -85, -35, 15, 65, 115, 165], map, color);
 
     addInfo(map, function (props) {
-        var infoBox = '<h3> Borough Statistics </h3><br/>' +
-            'Borough Name: ' + props.la_name + '<br />' +
-            'Borough Code: ' + props.la_code + '<br />' +
+        var infoBox = '<h3>' + props.LA_name + ' Statistics</h3><br/>' +
+            'Borough Code: ' + props.e_code + '<br />' +
             'Cycling Weekly: ' + props.cycling_weekly + '<br />' +
             'Cycling Rank: ' + props.cycling_rank + '<br />' +
             'Walking Thriceweekly: ' + props.walking_thriceweekly + '<br />' +

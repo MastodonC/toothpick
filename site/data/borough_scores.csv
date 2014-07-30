@@ -1,4 +1,4 @@
-LA.code,LA.name,cycling_weekly,cycling.rank,walking_thriceweekly,walking.rank,weekly_greenspace_visits,greenspace.rank,hospital_experience_score,hospital.rank,pct_canseegp,gp.rank,dentists_per_thousand,dentists.rank,overall.rank
+e_code,LA_name,cycling_weekly,cycling_rank,walking_thriceweekly,walking_rank,weekly_greenspace_visits,greenspace_rank,hospital_experience_score,hospital_rank,pct_canseegp,gp_rank,dentists_per_thousand,dentists_rank,overall_rank
 E06000053,ISLES OF SCILLY,30.6,177,68.4,175.5,NA,NA,NA,NA,0.964912280701754,145,NA,NA,165.833333333333
 E07000203,MID SUFFOLK,13,131,58.7,116.5,2.13318777292576,149.5,NA,NA,0.92443919716647,143,NA,NA,135
 E07000053,WEYMOUTH AND PORTLAND,13.8,142.5,56.7,76.5,2.16748768472906,151.5,NA,NA,0.87089061566049,121,NA,NA,122.875

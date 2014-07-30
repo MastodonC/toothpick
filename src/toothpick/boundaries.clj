@@ -41,8 +41,8 @@
 
 (defn ->geojson-feature [{:keys [properties coordinates]}]
   {:type "Feature"
-   :geometry {:type "LineString"
-              :coordinates coordinates}
+   :geometry {:type "Polygon"
+              :coordinates [coordinates]}
    :properties properties})
 
 (defn geojson-for [xs]
