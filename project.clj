@@ -12,6 +12,8 @@
                  [camel-snake-kebab "0.2.0"]
                  [clojure-csv "2.0.1"]]
 
+  :source-paths ["src/clj"]
+
   :profiles { :dev {:dependencies [[org.apache.hadoop/hadoop-core "1.1.2"]]}}
 
   :jvm-opts ["-Xms768m" "-Xmx768m"])

@@ -184,7 +184,7 @@
     (?- (stdout) (postcode->borough (codepoint-file postcodes trap)))))
 
 (defn go-borough-codes []
-  (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv" :skip-header? true)
+  (let [postcodes (hfs-textline "datasets/codepoint-postcodes-small.csv" :skip-header? true)
         output    (hfs-delimited "output/borough-codes" :sinkmode :replace)
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
-    (?- output (distinct-english-boroughs (codepoint-file postcodes trap)))))
+    (?- (stdout) (distinct-english-boroughs (codepoint-file postcodes trap)))))
