@@ -79,9 +79,11 @@ borough.gp.experience<-ddply(patient.experience,
                              question_responses = sum(question_responses,na.rm=TRUE), 
                              positive_responses = sum(positive_responses,na.rm=TRUE),
                              number_gp_practices = length(practice_code))
+borough.gp.experience<-merge(borough.gp.experience,population,by.x="LA.code",by.y="X",all.x=TRUE)
+borough.gp.experience$gppractices_per_thousand<-1000*borough.gp.experience$number_gp_practices/borough.gp.experience$All.Persons..All.Ages
 borough.gp.experience$pct_canseegp<-borough.gp.experience$positive_responses/borough.gp.experience$question_responses
 borough.gp.experience$gp.rank<-scale(rank(borough.gp.experience$pct_canseegp),center=TRUE,scale=FALSE)
-borough.gp.experience<-borough.gp.experience[,c("LA.code","number_gp_practices","pct_canseegp","gp.rank")]
+borough.gp.experience<-borough.gp.experience[,c("LA.code","number_gp_practices","gppractices_per_thousand","pct_canseegp","gp.rank")]
 
 ## HOSPITAL FRIENDS AND FAMILY DATA
 hospital.ae<-read.csv("Friends and Family/FFT_AE_csv4.csv",skip=2)
@@ -129,6 +131,6 @@ borough.healthscore$overall.rank<-
 
 borough.healthscore<-subset(borough.healthscore,!is.na(LA.name) & !is.na(LA.code))
 borough.healthscore<-borough.healthscore[order(borough.healthscore$overall.rank,decreasing=TRUE),]
-borough.healthscore<-borough.healthscore[-grep(pattern = "^E1",borough.healthscore$LA_code),] # Remove county councils, where codes begin with E1
+borough.healthscore<-borough.healthscore[-grep(pattern = "^E1",borough.healthscore$LA.code),] # Remove county councils, where codes begin with E1
 names(borough.healthscore)<-gsub("\\.","_",names(borough.healthscore))
 write.csv(borough.healthscore,"borough_scores.csv",quote=FALSE,row.names=FALSE)
