@@ -39,7 +39,7 @@ names(cycling.frequency)[3]<-"cycling_weekly"
 cycling.frequency$cycling.rank<-
   scale(rank(cycling.frequency$cycling_weekly),
         center=TRUE,
-        scale=FALSE) # Rank data, centre on 0 to ensure that missing boroughs don't get a skewed final score
+        scale=TRUE) # Rank data, centre on 0 to ensure that missing boroughs don't get a skewed final score
 
 walking.frequency<-read.xls("local-area-walking-and-cycling/cw0121.xls",skip=7)
 walking.frequency$LA.name<-paste(walking.frequency$X,walking.frequency$X.1,sep="")
@@ -48,7 +48,7 @@ walking.frequency<-walking.frequency[,c("LA.code","LA.name","X3.x.per.week")] ##
 walking.frequency$LA.code<-gsub("E07000100","E07000240",walking.frequency$LA.code) # Update St Albans codes for post boundary changes
 walking.frequency$LA.code<-gsub("E07000104","E07000241",walking.frequency$LA.code)
 names(walking.frequency)[3]<-"walking_thriceweekly"
-walking.frequency$walking.rank<-scale(rank(walking.frequency$walking_thriceweekly),center=TRUE,scale=FALSE)
+walking.frequency$walking.rank<-scale(rank(walking.frequency$walking_thriceweekly),center=TRUE,scale=TRUE)
 
 ## GREEN SPACE VISIT DATA
 ## Read green space visit data from http://www.naturalengland.org.uk/ourwork/evidence/mene.aspx#year4
@@ -59,7 +59,7 @@ names(mene.borough)<-c("LA.name",y="weekly_greenspace_visits")
 mene.borough$LA.name<-as.character(mene.borough$LA.name)
 mene.borough$LA.name<-gsub("&","AND",mene.borough$LA.name) # Make borough names match exactly
 mene.borough<-subset(mene.borough,LA.name!="0")
-mene.borough$greenspace.rank<-scale(rank(mene.borough$weekly_greenspace_visits),center=TRUE,scale=FALSE)
+mene.borough$greenspace.rank<-scale(rank(mene.borough$weekly_greenspace_visits),center=TRUE,scale=TRUE)
 
 ## GP SURGERY AND QUALITY DATA
 ## Patient experience of being able to see a doctor fairly quickly - indicator P01146
@@ -82,7 +82,7 @@ borough.gp.experience<-ddply(patient.experience,
 borough.gp.experience<-merge(borough.gp.experience,population,by.x="LA.code",by.y="X",all.x=TRUE)
 borough.gp.experience$gppractices_per_thousand<-1000*borough.gp.experience$number_gp_practices/borough.gp.experience$All.Persons..All.Ages
 borough.gp.experience$pct_canseegp<-borough.gp.experience$positive_responses/borough.gp.experience$question_responses
-borough.gp.experience$gp.rank<-scale(rank(borough.gp.experience$pct_canseegp),center=TRUE,scale=FALSE)
+borough.gp.experience$gp.rank<-scale(rank(borough.gp.experience$pct_canseegp),center=TRUE,scale=TRUE)
 borough.gp.experience<-borough.gp.experience[,c("LA.code","number_gp_practices","gppractices_per_thousand","pct_canseegp","gp.rank")]
 
 ## HOSPITAL FRIENDS AND FAMILY DATA
@@ -92,7 +92,7 @@ hospital.locations<-read.csv("hospital-locations.csv",sep="\t",header=FALSE)
 hospital.ae<-merge(hospital.ae,hospital.locations,by.x="Site.Code",by.y="V1",all.x=TRUE)
 borough.hospital.experience<-ddply(hospital.ae, .(V3), summarize, hospital_experience_score = sum(Friends.and.Family.Test.Score))
 names(borough.hospital.experience)<-c("LA.code","hospital_experience_score")
-borough.hospital.experience$hospital.rank<-scale(rank(borough.hospital.experience$hospital_experience_score),center=TRUE,scale=FALSE)
+borough.hospital.experience$hospital.rank<-scale(rank(borough.hospital.experience$hospital_experience_score),center=TRUE,scale=TRUE)
 
 ## DENTISTRY DATA
 dentists<-read.csv("mastodonc 2.csv",header=TRUE)
@@ -103,7 +103,7 @@ dentists.borough<-ddply(dentists, .(LA.code), summarize, dental_practitioners = 
 dentists.borough<-merge(dentists.borough,population,by.x="LA.code",by.y="X",all.x=TRUE)
 dentists.borough$dentists_per_thousand<-dentists.borough$dental_practitioners/(dentists.borough$All.Persons..All.Ages/1000)
 dentists.borough<-dentists.borough[,c("LA.code","dentists_per_thousand")]
-dentists.borough$dentists.rank<-scale(rank(dentists.borough$dentists_per_thousand),center=TRUE,scale=FALSE)
+dentists.borough$dentists.rank<-scale(rank(dentists.borough$dentists_per_thousand),center=TRUE,scale=TRUE)
 
 ## MERGE ALL DATASETS AND RANKINGS TO CREATE A SINGLE SCORE
 borough.healthscore<-cycling.frequency
