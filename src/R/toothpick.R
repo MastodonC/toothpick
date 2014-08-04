@@ -133,4 +133,5 @@ borough.healthscore<-subset(borough.healthscore,!is.na(LA.name) & !is.na(LA.code
 borough.healthscore<-borough.healthscore[order(borough.healthscore$overall.rank,decreasing=TRUE),]
 borough.healthscore<-borough.healthscore[-grep(pattern = "^E1",borough.healthscore$LA.code),] # Remove county councils, where codes begin with E1
 names(borough.healthscore)<-gsub("\\.","_",names(borough.healthscore))
+borough.healthscore$overall_grade<-cut(borough.healthscore$overall_rank,6,labels=LETTERS[6:1])
 write.csv(borough.healthscore,"borough_scores.csv",quote=FALSE,row.names=FALSE)
