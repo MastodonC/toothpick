@@ -16,4 +16,4 @@
 
   :profiles { :dev {:dependencies [[org.apache.hadoop/hadoop-core "1.1.2"]]}}
 
-  :jvm-opts ["-Xms768m" "-Xmx768m"])
+  :jvm-opts ["-Xms768m" "-Xmx4G"])
