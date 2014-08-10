@@ -124,10 +124,17 @@
       (split ?line 5 :> ?practice-id ?nhsfees ?post-code-dirty ?num-practitioners ?average-review-score-of-clinic)
       (normalise-postcode ?post-code-dirty :> ?post-code)))
 
+(defn boris-file [raw-in trap]
+  (<- [?name ?post-code ?nbBikes ?nbDocks]
+      (raw-in ?line)
+      (split ?line 4 :> ?name ?post-code-dirty ?nbBikes ?nbDocks)
+      (normalise-postcode ?post-code-dirty :> ?post-code)))
+
 (defn postcode->borough [in]
   (<- [?post-code ?borough-code]
       (in :#> 10 {0 ?post-code
-                  8 ?borough-code})))
+                  8 ?borough-code-dirty})
+      (borough-code-corrections ?borough-code-dirty :> ?borough-code)))
 
 (defn toothpick->borough [toothpick postcodes]
   (<- [?practice-id  ?borough-code]
@@ -141,6 +148,11 @@
       (borough-code-corrections ?borough-code-dirty :> ?borough-code)
       (english? ?borough-code)
       (:distinct ?borough-code)))
+
+(defn boris->borough [boris postcodes]
+  (<- [?name ?borough-code ?nbBikes ?nbDocks]
+      (boris :> ?name ?post-code ?nbBikes ?nbDocks)
+      (postcodes :> ?post-code ?borough-code)))
 
 (defn go-pc-borough []
   (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv" :skip-header? true)
@@ -188,3 +200,11 @@
         output    (hfs-delimited "output/borough-codes" :sinkmode :replace)
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
     (?- (stdout) (distinct-english-boroughs (codepoint-file postcodes trap)))))
+
+(defn go-boris []
+  (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv")
+        stations (hfs-textline "datasets/boris-stations.csv" :skip-header? true)
+        output    (hfs-delimited "output/boris-stations" :sinkmode :replace)
+        trap      (hfs-delimited "output/trap" :sinkmode :replace)]
+    (?- (stdout) (boris->borough (boris-file stations trap)
+                                 (postcode->borough (codepoint-file postcodes trap))))))
