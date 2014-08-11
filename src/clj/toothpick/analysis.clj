@@ -171,7 +171,7 @@
   (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv" :skip-header? true)
         output    (hfs-delimited "output/pc-borough" :sinkmode :replace)
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
-    (?- (stdout) (postcode->borough (codepoint-file postcodes trap)))))
+    (?- output (postcode->borough (codepoint-file postcodes trap)))))
 
 (defn go-practices []
   (let [epraccur  (hfs-textline "datasets/epraccur.csv")
@@ -197,22 +197,22 @@
     (?- output (toothpick->borough (toothpick-file toothpick trap)
                                     (postcode->borough (codepoint-file postcodes trap))))))
 (defn go-epraccur []
-  (let [epraccur  (hfs-textline "datasets/epraccur-small.csv")
+  (let [epraccur  (hfs-textline "datasets/epraccur.csv")
         output    (hfs-delimited "output/practices" :sinkmode :replace)
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
-    (?- (stdout) (epraccur-file epraccur trap))))
+    (?- output (epraccur-file epraccur trap))))
 
 (defn go-postcodes []
-  (let [postcodes (hfs-textline "datasets/codepoint-postcodes-small.csv")
+  (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv")
         output    (hfs-delimited "output/practices" :sinkmode :replace :write-header? true)
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
-    (?- (stdout) (postcode->borough (codepoint-file postcodes trap)))))
+    (?- output (postcode->borough (codepoint-file postcodes trap)))))
 
 (defn go-borough-codes []
-  (let [postcodes (hfs-textline "datasets/codepoint-postcodes-small.csv" :skip-header? true)
+  (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv" :skip-header? true)
         output    (hfs-delimited "output/borough-codes" :sinkmode :replace)
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
-    (?- (stdout) (distinct-english-boroughs (codepoint-file postcodes trap)))))
+    (?- output (distinct-english-boroughs (codepoint-file postcodes trap)))))
 
 (defn go-boris []
   (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv")
