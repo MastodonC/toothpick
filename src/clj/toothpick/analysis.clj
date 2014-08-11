@@ -154,6 +154,19 @@
       (boris :> ?name ?post-code ?nbBikes ?nbDocks)
       (postcodes :> ?post-code ?borough-code)))
 
+(defn gp-outcomes-file [raw-in trap]
+  (<-  [?Practice_Code ?Practice_Name ?Indicator_Name ?Value ?Extract_Date ?Indicator_Group_Name ?Indicator_Sub_Group_Name ?Indicator_Code ?CCG ?SHA_Code ?SHA_Name ?PCT_Code ?PCT_Name ?Age_Band ?Deprivation_Band]
+       (raw-in ?line)
+       (split ?line 15 :> ?Practice_Code ?Practice_Name ?Indicator_Name ?Value ?Extract_Date ?Indicator_Group_Name ?Indicator_Sub_Group_Name ?Indicator_Code ?CCG ?SHA_Code ?SHA_Name ?PCT_Code ?PCT_Name ?Age_Band ?Deprivation_Band)))
+
+(deffilterfn can-see-doctor-fairly-quickly? [code]
+  (.startsWith code "P01146"))
+
+(defn gp-outcomes->can-see-doctor-fairly-quickly [outcomes]
+  (<-  [?Practice_Code ?Practice_Name ?Indicator_Name ?Value ?Extract_Date ?Indicator_Group_Name ?Indicator_Sub_Group_Name ?Indicator_Code ?CCG ?SHA_Code ?SHA_Name ?PCT_Code ?PCT_Name ?Age_Band ?Deprivation_Band]
+       (outcomes :> ?Practice_Code ?Practice_Name ?Indicator_Name ?Value ?Extract_Date ?Indicator_Group_Name ?Indicator_Sub_Group_Name ?Indicator_Code ?CCG ?SHA_Code ?SHA_Name ?PCT_Code ?PCT_Name ?Age_Band ?Deprivation_Band)
+       (can-see-doctor-fairly-quickly? ?Indicator_Code)))
+
 (defn go-pc-borough []
   (let [postcodes (hfs-textline "datasets/codepoint-postcodes.csv" :skip-header? true)
         output    (hfs-delimited "output/pc-borough" :sinkmode :replace)
@@ -208,3 +221,9 @@
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
     (?- output (boris->borough (boris-file stations trap)
                                  (postcode->borough (codepoint-file postcodes trap))))))
+
+(defn go-can-see-doctor-fairly-quickly []
+  (let [outcomes (hfs-textline "datasets/GPOutcomes/results.csv")
+        output    (hfs-delimited "output/patient-experience" :sinkmode :replace)
+        trap      (hfs-delimited "output/trap" :sinkmode :replace)]
+    (?- output (gp-outcomes->can-see-doctor-fairly-quickly (gp-outcomes-file outcomes trap)))))
