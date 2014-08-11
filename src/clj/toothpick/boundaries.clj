@@ -10,15 +10,23 @@
 
 (def get-borough-data get-borough-data*)
 
-(defn ->coordinate-pairs [s]
-  (if s
-    (let [s' (if (vector? s) (first s) s)]
-      (->> (str/split s' #"\s+")
-           (map #(Double. %))
-           (partition 2)
-           (map reverse)
-           (map vec)))
-    []))
+
+(defmulti ->coordinate-pairs type)
+
+(defmethod ->coordinate-pairs nil [s]
+  [])
+
+(defmethod ->coordinate-pairs clojure.lang.PersistentVector [s]
+  ;; if it's a vector, we have a number of polygons, we assume the last is the primary, hence the reverse.
+  (mapv (comp first ->coordinate-pairs) (reverse s)))
+
+(defmethod ->coordinate-pairs :default [s]
+  (->> (str/split s #"\s+")
+       (map #(Double. %))
+       (partition 2)
+       (map reverse)
+       (mapv vec)
+       vector))
 
 (defn ->statistical-geog-url [e-code]
   (format "http://statistics.data.gov.uk/doc/statistical-geography/%s.json" e-code))
@@ -37,7 +45,7 @@
 
 (defn ->geojson-feature [{:keys [properties coordinates]}]
   {:type "Feature"
-   :geometry {:type "Polygon"
+   :geometry {:type "MultiPolygon"
               :coordinates [coordinates]}
    :properties properties})
 
