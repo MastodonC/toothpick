@@ -105,6 +105,11 @@ dentists.borough$dentists_per_thousand<-dentists.borough$dental_practitioners/(d
 dentists.borough<-dentists.borough[,c("LA.code","dentists_per_thousand")]
 dentists.borough$dentists.rank<-scale(rank(dentists.borough$dentists_per_thousand),center=TRUE,scale=TRUE)
 
+## BARCLAYS BIKE STATIONS IN LONDON
+bikes<-read.csv("boris-stations.csv",header=FALSE,sep="\t")
+bikes<-aggregate(bikes$V4,by=list(bikes$V2),FUN=sum)
+names(bikes)<-c("LA.code","public_bike_docks")
+
 ## MERGE ALL DATASETS AND RANKINGS TO CREATE A SINGLE SCORE
 borough.healthscore<-cycling.frequency
 borough.healthscore<-merge(borough.healthscore,walking.frequency,all=TRUE)
@@ -119,6 +124,7 @@ borough.healthscore<-merge(borough.healthscore,mene.borough,all=TRUE)
 borough.healthscore<-merge(borough.healthscore,borough.hospital.experience,by="LA.code",all=TRUE)
 borough.healthscore<-merge(borough.healthscore,borough.gp.experience,by="LA.code",all=TRUE)
 borough.healthscore<-merge(borough.healthscore,dentists.borough,by="LA.code",all=TRUE)
+borough.healthscore<-merge(borough.healthscore,bikes,by="LA.code",all.x=TRUE)
 
 borough.healthscore$overall.rank<-
   rowMeans(
