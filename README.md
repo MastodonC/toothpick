@@ -13,3 +13,15 @@ Data sources include:
 - access to dentists data from Toothpick
 
 The visualisation of the data is in a separate 'site' repo. 
+
+
+GeoJSON
+=======
+
+The borough boundary data is supplied in [[GeoJson][http://geojson.org/]] format. We prefer the less verbose (and thus less bytes over the wire) [[TopoJson][https://github.com/mbostock/topojson]] format. Conversion between the two is achieved via a command line tool. Unfortunately installation of the tool is somewhat cumbersome. We provide a [[Docker][http://www.docker.com]] image to do the hard work. Assuming docker is installed.
+
+```
+docker run --volume=${PWD}:/docker sw1nn/topojson <input-file>
+```
+
+This docker image will be pulled from the public repo. We provide the Dockerfile in the ``topojson-build`` directory for reference, but you shouldn't need to build the image yourself.
