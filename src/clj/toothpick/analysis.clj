@@ -206,5 +206,5 @@
         stations (hfs-textline "datasets/boris-stations.csv" :skip-header? true)
         output    (hfs-delimited "output/boris-stations" :sinkmode :replace)
         trap      (hfs-delimited "output/trap" :sinkmode :replace)]
-    (?- (stdout) (boris->borough (boris-file stations trap)
+    (?- output (boris->borough (boris-file stations trap)
                                  (postcode->borough (codepoint-file postcodes trap))))))
