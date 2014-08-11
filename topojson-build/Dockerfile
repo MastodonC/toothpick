@@ -8,5 +8,7 @@ RUN apt-get update
 RUN apt-get install -y nodejs
 
 RUN npm install -g topojson
+RUN mkdir /docker
+WORKDIR /docker
 
 ENTRYPOINT ["topojson"]
