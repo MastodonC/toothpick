@@ -63,10 +63,8 @@ mene.borough$greenspace.rank<-scale(rank(mene.borough$weekly_greenspace_visits),
 
 ## GP SURGERY AND QUALITY DATA
 ## Patient experience of being able to see a doctor fairly quickly - indicator P01146
-## Filtered from original file using a terminal command 
-## grep "P01146" results.csv > patient_experience.csv
 ## Calculate count of practices and percentage of patients who can see a doctor fairly quickly per borough
-patient.experience<-read.csv("GPOutcomes/patient_experience.csv",header=FALSE)
+patient.experience<-read.csv("GPOutcomes/patient_experience_cascalog.csv",header=FALSE)
 patient.experience<-subset(patient.experience,V3 %in% c("Able to see a doctor fairly quickly - total responses","Able to see a doctor fairly quickly - Yes"))
 patient.experience<-patient.experience[,c("V1","V3","V4")]
 patient.experience<-cast(patient.experience,V1~V3)
