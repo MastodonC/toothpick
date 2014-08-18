@@ -15,10 +15,16 @@ Data sources include:
 The visualisation of the data is in a separate 'site' repo.
 
 
+Toothpick Data
+==============
+
+You can download the data [here](http://toothpick-study-data.s3-website-us-east-1.amazonaws.com/toothpick-datasets.zip)
+
+
 GeoJSON
 =======
 
-The borough boundary data is supplied in [[GeoJson][http://geojson.org/]] format. We prefer the less verbose (and thus less bytes over the wire) [[TopoJson][https://github.com/mbostock/topojson]] format. Conversion between the two is achieved via a command line tool. Unfortunately installation of the tool is somewhat cumbersome. We provide a [[Docker][http://www.docker.com]] image to do the hard work. Assuming docker is installed.
+The borough boundary data is supplied in [GeoJson](http://geojson.org/) format. We prefer the less verbose (and thus less bytes over the wire) [TopoJson](https://github.com/mbostock/topojson) format. Conversion between the two is achieved via a command line tool. Unfortunately installation of the tool is somewhat cumbersome. We provide a [Docker](http://www.docker.com) image to do the hard work. Assuming docker is installed.
 
 ```
 docker run --volume=${PWD}:/docker mastodonc/topojson -p LA_code <input-file> > <output_file>
