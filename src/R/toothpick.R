@@ -6,6 +6,7 @@
 ## - outputs csv with raw metrics, metric-level ranks, and overall rank, for each borough
 
 # Location where copy of raw data is stored
+# UPDATE THIS TO POINT TO the datasets directory as per the README.
 setwd("/Users/francinebennett/Dropbox/datasets/") 
 
 # Libraries used in this analysis
