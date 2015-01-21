@@ -7,7 +7,7 @@
 
 # Location where copy of raw data is stored
 # UPDATE THIS TO POINT TO the datasets directory as per the README.
-setwd("/Users/francinebennett/Dropbox/datasets/") 
+setwd("/Users/francinebennett/Desktop/client/toothpick-datasets/")
 
 # Libraries used in this analysis
 require("gdata")
@@ -17,6 +17,7 @@ require("reshape")
 require("foreign")
 require("plyr")
 require("lubridate")
+require("scales")
 
 ## POPULATION DATA
 # populations per local authority from ONS at http://www.neighbourhood.statistics.gov.uk/dissemination/instanceSelection.do?JSAllowed=true&Function=&%24ph=60_61_60_61&CurrentPageId=61&step=2&datasetFamilyId=1813&instanceSelection=134023&Next.x=9&Next.y=5
@@ -138,5 +139,16 @@ borough.healthscore<-subset(borough.healthscore,!is.na(LA.name) & !is.na(LA.code
 borough.healthscore<-borough.healthscore[order(borough.healthscore$overall.rank,decreasing=TRUE),]
 borough.healthscore<-borough.healthscore[-grep(pattern = "^E1",borough.healthscore$LA.code),] # Remove county councils, where codes begin with E1
 names(borough.healthscore)<-gsub("\\.","_",names(borough.healthscore))
-borough.healthscore$overall_grade<-cut(borough.healthscore$overall_rank,6,labels=LETTERS[6:1])
+borough.healthscore$letter_grade<-cut(borough.healthscore$overall_rank,6,labels=LETTERS[6:1])
+
+# Transform all ranks to a 1-10 scale
+score_transform<-function(column_name){
+  round(rescale(borough.healthscore[,column_name],to=c(1,10)),digits=2)}
+
+columns_to_transform<-c("cycling_rank","walking_rank","greenspace_rank","hospital_rank","gp_rank","dentists_rank","overall_rank")
+
+for (i in 1:length(columns_to_transform)){
+  borough.healthscore[,columns_to_transform[i]]<-score_transform(columns_to_transform[i])
+}
+
 write.csv(borough.healthscore,"./generated/borough_scores.csv",quote=FALSE,row.names=FALSE)
